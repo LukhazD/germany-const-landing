@@ -1,0 +1,42 @@
+---
+import "../styles/global.css"; // Ensure we have basic setups if needed, or rely on Tailwind
+import Hero from "../components/germany-const/Hero";
+import BentoGrid from "../components/germany-const/BentoGrid";
+import Cursor from "../components/germany-const/Cursor";
+---
+
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Germany Const - Arquitectura y Reformas</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Manrope:wght@300;400;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                background-color: #1a1a1a;
+                color: white;
+                cursor: none; /* Hide default cursor */
+            }
+            /* Mobile fallback for cursor */
+            @media (pointer: coarse) {
+                body {
+                    cursor: auto;
+                }
+            }
+        </style>
+    </head>
+    <body class="antialiased bg-background overflow-x-hidden">
+        <!-- Custom Cursor - Client only since it relies on window events -->
+        <Cursor client:only="react" />
+
+        <main>
+            <Hero client:load />
+            <BentoGrid client:visible />
+        </main>
+    </body>
+</html>

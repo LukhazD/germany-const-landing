@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #1A1A1A;
+  --color-secondary: #808080;
+  --color-action: #FF5722;
+  --color-luxury: #9B111E;
+  
+  --font-sans: 'Inter', 'Manrope', sans-serif;
+  
+  --cursor-none: none;
+}
+
+/* Custom Utilities if needed, though most things should be in the theme or utility classes */
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
