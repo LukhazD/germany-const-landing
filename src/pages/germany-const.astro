@@ -1,8 +1,8 @@
 ---
 import "../styles/global.css"; // Ensure we have basic setups if needed, or rely on Tailwind
-import Hero from "../components/germany-const/Hero";
-import BentoGrid from "../components/germany-const/BentoGrid";
-import Cursor from "../components/germany-const/Cursor";
+import Hero from "../components/react/Hero";
+import BentoGrid from "../components/react/BentoGrid";
+import Cursor from "../components/react/Cursor";
 ---
 
 <html lang="es">
@@ -35,8 +35,8 @@ import Cursor from "../components/germany-const/Cursor";
         <Cursor client:only="react" />
 
         <main>
-            <Hero client:load />
-            <BentoGrid client:visible />
+            <Hero client:only="react" />
+            <BentoGrid client:only="react" />
         </main>
     </body>
 </html>
