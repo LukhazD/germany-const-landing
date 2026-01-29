@@ -1,5 +1,7 @@
 /** @jsxImportSource react */
 import React, { useEffect, useRef } from 'react';
+import ServicesHeader from './ServicesHeader';
+
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
@@ -77,74 +79,81 @@ export default function Hero() {
     ));
 
     return (
-        <section
-            ref={containerRef}
-            className="h-screen w-full flex flex-col items-center justify-center bg-background text-white relative overflow-hidden transform-gpu"
-        >
-            <div className="flex flex-col items-center z-10">
-                {/* Animated Brand Logo using User Provided SVG Geometry */}
-                <div className="mb-12 w-64 h-64 md:w-96 md:h-96 relative">
-                    <svg
-                        width="100%"
-                        height="100%"
-                        viewBox="0 0 500 500"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-full h-full"
-                    >
-                        {/* Optional Background - removed to blend with Hero */}
-                        {/* <rect width="500" height="500" fill="#000000"/> */}
+        <>
+            <section
+                ref={containerRef}
+                className="h-screen w-full flex flex-col items-center justify-center bg-background text-white relative overflow-hidden transform-gpu"
+            >
 
-                        <rect
-                            ref={logoPathRef}
-                            x="50" y="50" width="400" height="400"
-                            fill="none"
-                            stroke="#FF5722"
-                            strokeWidth="4"
-                        />
-
-                        <text
-                            x="240" y="280"
-                            textAnchor="middle"
-                            fill="#FF5722"
-                            fontFamily="'Didot', 'Bodoni MT', 'Times New Roman', serif"
-                            fontSize="220"
-                            fontWeight="normal"
-                            letterSpacing="-10"
-                            className="logo-text-gc opacity-0"
+                <div className="flex flex-col items-center z-10">
+                    {/* Animated Brand Logo using User Provided SVG Geometry */}
+                    <div className="mb-12 w-64 h-64 md:w-96 md:h-96 relative">
+                        <svg
+                            width="100%"
+                            height="100%"
+                            viewBox="0 0 500 500"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-full h-full"
                         >
-                            GC
-                        </text>
+                            {/* Optional Background - removed to blend with Hero */}
+                            {/* <rect width="500" height="500" fill="#000000"/> */}
 
-                        <text
-                            x="250" y="380"
-                            textAnchor="middle"
-                            fill="#FF5722"
-                            fontFamily="'Century Gothic', 'Helvetica Neue', Arial, sans-serif"
-                            fontSize="50"
-                            fontWeight="300"
-                            letterSpacing="10"
-                            style={{ textTransform: 'lowercase' }}
-                            className="logo-text-build opacity-0"
-                        >
-                            building
-                        </text>
-                    </svg>
+                            <rect
+                                ref={logoPathRef}
+                                x="50" y="50" width="400" height="400"
+                                fill="none"
+                                stroke="#FF5722"
+                                strokeWidth="4"
+                            />
+
+                            <text
+                                x="240" y="280"
+                                textAnchor="middle"
+                                fill="#FF5722"
+                                fontFamily="'Didot', 'Bodoni MT', 'Times New Roman', serif"
+                                fontSize="220"
+                                fontWeight="normal"
+                                letterSpacing="-10"
+                                className="logo-text-gc opacity-0"
+                            >
+                                GC
+                            </text>
+
+                            <text
+                                x="250" y="380"
+                                textAnchor="middle"
+                                fill="#FF5722"
+                                fontFamily="'Century Gothic', 'Helvetica Neue', Arial, sans-serif"
+                                fontSize="50"
+                                fontWeight="300"
+                                letterSpacing="10"
+                                style={{ textTransform: 'lowercase' }}
+                                className="logo-text-build opacity-0"
+                            >
+                                building
+                            </text>
+                        </svg>
+                    </div>
+
+                    <h1 ref={textRef} className="text-4xl md:text-7xl font-bold tracking-tight mb-4 flex overflow-hidden text-center">
+                        {titleChars}
+                    </h1>
+
+                    <p ref={subTextRef} className="text-secondary text-lg md:text-xl font-light tracking-wide text-center uppercase">
+                        Arquitectura &bull; Construcción &bull; Reformas
+                    </p>
                 </div>
 
-                <h1 ref={textRef} className="text-4xl md:text-7xl font-bold tracking-tight mb-4 flex overflow-hidden text-center">
-                    {titleChars}
-                </h1>
+                <div className="absolute bottom-10 animate-bounce text-secondary cursor-pointer z-10" onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+                    </svg>
+                </div>
+            </section>
 
-                <p ref={subTextRef} className="text-secondary text-lg md:text-xl font-light tracking-wide text-center uppercase">
-                    Arquitectura &bull; Construcción &bull; Reformas
-                </p>
-            </div>
-
-            <div className="absolute bottom-10 animate-bounce text-secondary cursor-pointer" onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
-                </svg>
-            </div>
-        </section>
+            <ServicesHeader delay={3} />
+        </>
     );
 }
+
+
