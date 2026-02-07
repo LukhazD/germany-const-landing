@@ -172,7 +172,7 @@ export default function Hero() {
                 </div>
             </section>
 
-            <ServicesHeader delay={3} />
+            {/* <ServicesHeader delay={3} /> */}
 
             {/* Norms Modal */}
             {normsModalOpen && <NormsModal onClose={() => setNormsModalOpen(false)} />}
