@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Hero from "../components/react/Hero";
+import ServicesHeader from "../components/react/ServicesHeader";
 import BentoGrid from "../components/react/BentoGrid";
 import Cursor from "../components/react/Cursor";
 ---
@@ -34,6 +35,7 @@ import Cursor from "../components/react/Cursor";
   >
     <Cursor client:only="react" />
 
+    <ServicesHeader client:load />
     <main class="flex-grow w-full">
       <Hero client:only="react" />
       <BentoGrid client:only="react" />
