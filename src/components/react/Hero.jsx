@@ -19,7 +19,20 @@ export default function Hero() {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // 1. Logo Line Drawing Animation
+            // 1. Brand Name Animation (New)
+            gsap.fromTo('.brand-name-char',
+                { opacity: 0, x: -10 },
+                {
+                    opacity: 1,
+                    x: 0,
+                    stagger: 0.1,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    delay: 0.5
+                }
+            );
+
+            // 2. Logo Line Drawing Animation
             if (logoPathRef.current) {
                 const length = logoPathRef.current.getTotalLength();
                 gsap.set(logoPathRef.current, { strokeDasharray: length, strokeDashoffset: length });
@@ -27,15 +40,16 @@ export default function Hero() {
                     strokeDashoffset: 0,
                     duration: 2,
                     ease: 'power2.inOut',
+                    delay: 1.5 // Delay slightly after text starts
                 });
 
                 // Logo Text Fade In
-                gsap.to('.logo-text-gc', { opacity: 1, duration: 1, delay: 1 });
-                gsap.to('.logo-text-build', { opacity: 1, duration: 1, delay: 1.5 });
+                gsap.to('.logo-text-gc', { opacity: 1, duration: 1, delay: 2.5 });
+                gsap.to('.logo-text-build', { opacity: 1, duration: 1, delay: 3 });
             }
 
-            // 2. Text Stagger Animation
-            const tl = gsap.timeline({ delay: 0.5 });
+            // 3. Text Stagger Animation (Main Title)
+            const tl = gsap.timeline({ delay: 3.5 }); // Wait for logo
             tl.fromTo(
                 '.hero-title-char',
                 { y: 50, opacity: 0 },
@@ -53,7 +67,7 @@ export default function Hero() {
                 '-=0.5'
             );
 
-            // 3. Scroll Shrink Effect
+            // 4. Scroll Shrink Effect
             gsap.to(containerRef.current, {
                 scrollTrigger: {
                     trigger: containerRef.current,
@@ -71,6 +85,14 @@ export default function Hero() {
         return () => ctx.revert();
     }, []);
 
+    // Brand Name Split
+    const brandName = "Germany Const";
+    const brandChars = brandName.split('').map((char, index) => (
+        <span key={index} className="brand-name-char inline-block whitespace-pre opacity-0">
+            {char}
+        </span>
+    ));
+
     // Helper to split text for stagger effect
     const title = "Construimos tu visión";
     const titleChars = title.split('').map((char, index) => (
@@ -87,6 +109,12 @@ export default function Hero() {
             >
 
                 <div className="flex flex-col items-center z-10 w-full px-4">
+
+                    {/* Brand Name Animated */}
+                    <div className="text-xl md:text-3xl font-serif italic tracking-widest mb-6 text-center text-action/80">
+                        {brandChars}
+                    </div>
+
                     <div className="mb-12 w-64 h-64 md:w-96 md:h-96 relative">
                         <svg
                             width="100%"
