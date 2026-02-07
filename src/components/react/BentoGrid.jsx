@@ -122,11 +122,11 @@ export default function BentoGrid() {
     }, [currentIndex]);
 
     return (
-        <section ref={gridRef} id="services" className="bg-background min-h-screen p-4 md:p-10 flex flex-col justify-center pb-10">
-            <div className="max-w-7xl mx-auto w-full grid grid-cols-1 auto-rows-[minmax(240px,auto)] md:grid-cols-4 md:grid-rows-4 gap-6 h-auto md:h-[1200px] lg:h-[1300px]">
+        <section ref={gridRef} id="services" className="bg-background min-h-screen p-4 md:p-10 flex flex-col justify-center pb-20">
+            <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[300px]">
 
                 {/* Card 1: Services Carousel (Main Module) - 2x2 - Replaces 'Reformas Integrales' */}
-                <div ref={carouselRef} className="bento-card-anim group col-span-1 row-span-1 md:col-span-2 md:row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 h-[300px] md:h-auto">
+                <div ref={carouselRef} className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 h-full min-h-[300px]">
 
                     <div ref={sliderRef} className="flex h-full w-full overflow-x-hidden flex-nowrap scroll-smooth">
                         {carouselData.map((item, idx) => (
@@ -166,7 +166,7 @@ export default function BentoGrid() {
                 {/* Card 2: Bolsa de Empleo (Job Portal) - 1x2 */}
                 <div
                     onClick={() => window.location.href = '/jobs'}
-                    className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-action/10 border border-action/20 hover:bg-action/20 transition-all duration-300 cursor-pointer flex flex-col justify-start gap-6"
+                    className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 relative overflow-hidden rounded-3xl bg-action/10 border border-action/20 hover:bg-action/20 transition-all duration-300 cursor-pointer flex flex-col justify-start gap-6 h-full"
                 >
                     <div className="p-8 text-action pb-0">
                         <Briefcase size={32} />
@@ -185,7 +185,7 @@ export default function BentoGrid() {
                 </div>
 
                 {/* Card 3: Project Management - 1x1 */}
-                <div className="bento-card-anim group col-span-1 md:col-span-1 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 p-8 flex flex-col justify-start gap-6 hover:bg-neutral-800 transition-colors">
+                <div className="bento-card-anim group col-span-1 md:col-span-1 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 p-8 flex flex-col justify-start gap-6 hover:bg-neutral-800 transition-colors h-full">
                     <div className="text-secondary">
                         <Briefcase size={32} />
                     </div>
@@ -203,7 +203,7 @@ export default function BentoGrid() {
                 </div>
 
                 {/* Card 4: Interiorismo - 1x1 */}
-                <div className="bento-card-anim group col-span-1 md:col-span-1 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 p-8 flex flex-col justify-start gap-6 hover:bg-neutral-800 transition-colors">
+                <div className="bento-card-anim group col-span-1 md:col-span-1 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 p-8 flex flex-col justify-start gap-6 hover:bg-neutral-800 transition-colors h-full">
                     <div className="text-action">
                         <Layers size={32} />
                     </div>
@@ -223,7 +223,7 @@ export default function BentoGrid() {
                 {/* Card 5: Análisis de Proyecto (Wide) - 2x1 */}
                 <div
                     onClick={() => setAnalysisModalOpen(true)}
-                    className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-800 border border-neutral-700 flex items-center p-8 hover:border-action transition-all cursor-pointer"
+                    className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-800 border border-neutral-700 flex items-center p-8 hover:border-action transition-all cursor-pointer h-full"
                 >
                     <div className="mr-6 p-4 bg-background rounded-2xl text-white group-hover:bg-action/20 group-hover:text-action transition-colors">
                         <FileSearch size={32} />
@@ -237,7 +237,7 @@ export default function BentoGrid() {
                 </div>
 
                 {/* Card 6: Contacto - 2x1 */}
-                <div className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-1 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 flex flex-col justify-center p-8 hover:border-action transition-all">
+                <div className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 flex flex-col justify-center p-8 hover:border-action transition-all h-full">
                     <div className="flex items-center gap-4 mb-6">
                         <div className="p-3 bg-white/5 rounded-xl text-white group-hover:bg-action group-hover:text-white transition-colors">
                             <Phone size={24} />
@@ -261,7 +261,7 @@ export default function BentoGrid() {
                     </div>
                 </div>
                 {/* Footer Module - 4x1 (Full Width) */}
-                <div className="bento-card-anim group p-8 gap-4 col-span-1 md:col-span-4 row-span-1 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-950 border border-neutral-800 flex flex-col justify-between hover:border-action transition-all cursor-default min-h-[250px] md:min-h-0">
+                <div className="bento-card-anim group p-8 gap-4 col-span-1 md:col-span-4 relative overflow-hidden rounded-3xl bg-neutral-950 border border-neutral-800 flex flex-col justify-between hover:border-action transition-all cursor-default h-full">
 
                     {/* Top Row: Brand & Socials */}
                     <div className="flex justify-between items-start w-full">
