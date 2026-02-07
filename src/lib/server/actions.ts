@@ -100,6 +100,8 @@ export async function createJobOffer(data: z.infer<typeof JobOfferSchema>, token
 }
 
 /**
+ * Admin Action: Update a Job Offer
+ */
 export async function updateJobOffer(id: string, data: Partial<z.infer<typeof JobOfferSchema>>, token: string) {
     await connectDB();
 
