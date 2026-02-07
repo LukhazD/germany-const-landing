@@ -8,8 +8,8 @@ import { randomUUID } from 'crypto';
 
 // --- Configuration & Helpers ---
 
-const ADMIN_USER = import.meta.env.ADMIN_DASHBOARD_USER;
-const ADMIN_PASS = import.meta.env.ADMIN_DASHBOARD_PASSWORD;
+const ADMIN_USER = process.env.ADMIN_DASHBOARD_USER || import.meta.env.ADMIN_DASHBOARD_USER;
+const ADMIN_PASS = process.env.ADMIN_DASHBOARD_PASSWORD || import.meta.env.ADMIN_DASHBOARD_PASSWORD;
 
 // MinIO / S3 Client Setup
 const s3Client = new S3Client({
