@@ -2,7 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-import { Ruler, Briefcase, Leaf, Layers, Box, PaintRoller, Hammer, Linkedin, Instagram, Phone } from 'lucide-react';
+import { Ruler, Briefcase, Layers, Linkedin, Instagram, Phone, FileSearch } from 'lucide-react';
+import ProjectAnalysisModal from './ProjectAnalysisModal';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
@@ -12,6 +13,9 @@ export default function BentoGrid() {
     const gridRef = useRef(null);
     const carouselRef = useRef(null);
     const sliderRef = useRef(null);
+    const [analysisModalOpen, setAnalysisModalOpen] = useState(false);
+
+
 
     // Carousel Data
     const carouselData = [
@@ -119,10 +123,10 @@ export default function BentoGrid() {
 
     return (
         <section ref={gridRef} id="services" className="bg-background min-h-screen p-4 md:p-10 flex flex-col justify-center pb-10">
-            <div className="max-w-7xl mx-auto w-full grid grid-cols-1 grid-rows-15 max-h-[1700px] md:grid-cols-4 md:grid-rows-4 gap-6 h-auto">
+            <div className="max-w-7xl mx-auto w-full grid grid-cols-1 auto-rows-[minmax(240px,auto)] md:grid-cols-4 md:grid-rows-4 gap-6 h-auto md:h-[1200px] lg:h-[1300px]">
 
                 {/* Card 1: Services Carousel (Main Module) - 2x2 - Replaces 'Reformas Integrales' */}
-                <div ref={carouselRef} className="bento-card-anim group col-span-1 row-span-3 md:col-span-2 md:row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800">
+                <div ref={carouselRef} className="bento-card-anim group col-span-1 row-span-1 md:col-span-2 md:row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 h-[300px] md:h-auto">
 
                     <div ref={sliderRef} className="flex h-full w-full overflow-x-hidden flex-nowrap scroll-smooth">
                         {carouselData.map((item, idx) => (
@@ -159,99 +163,140 @@ export default function BentoGrid() {
                     </div>
                 </div>
 
-                {/* Card 2: Arquitectura (Luxury) - 1x2 */}
-                <div className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-luxury/10 border border-[#9B111E] hover:bg-luxury/20 transition-all duration-300 cursor-pointer flex flex-col justify-between">
-                    <div className="p-8 text-luxury">
-                        <Ruler size={32} />
+                {/* Card 2: Bolsa de Empleo (Job Portal) - 1x2 */}
+                <div
+                    onClick={() => window.location.href = '/jobs'}
+                    className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-action/10 border border-action/20 hover:bg-action/20 transition-all duration-300 cursor-pointer flex flex-col justify-start gap-6"
+                >
+                    <div className="p-8 text-action pb-0">
+                        <Briefcase size={32} />
                     </div>
-                    <div className="p-8">
-                        <h3 className="text-2xl text-white font-bold mb-1">Arquitectura</h3>
-                        <p className="text-gray-400 text-sm">Diseño y planificación de alto nivel con estándares alemanes.</p>
+                    <div className="p-8 pt-0 flex flex-col gap-3">
+                        <h3 className="text-2xl text-white font-bold">Bolsa de Empleo</h3>
+                        <p className="text-gray-300 text-sm leading-relaxed">
+                            Únete a nuestro equipo de alto rendimiento. Buscamos talento para gestionar proyectos internacionales con los más altos estándares.
+                        </p>
+                        <ul className="text-sm text-gray-400 space-y-1 mt-2">
+                            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-action rounded-full"></span>Vacantes en Alemania y España</li>
+                            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-action rounded-full"></span>Crecimiento profesional</li>
+                            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-action rounded-full"></span>Formación continua</li>
+                        </ul>
                     </div>
                 </div>
 
                 {/* Card 3: Project Management - 1x1 */}
-                <div className="bento-card-anim group col-span-1 md:col-span-1 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 p-6 flex flex-col justify-between hover:bg-neutral-800 transition-colors">
-                    <Briefcase className="text-secondary" />
-                    <div>
-                        <h4 className="text-white font-bold text-lg">Gestión de Obra</h4>
-                        <p className="text-xs text-gray-400">Control total del proyecto. Sin desviaciones.</p>
+                <div className="bento-card-anim group col-span-1 md:col-span-1 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 p-8 flex flex-col justify-start gap-6 hover:bg-neutral-800 transition-colors">
+                    <div className="text-secondary">
+                        <Briefcase size={32} />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <h4 className="text-white font-bold text-xl">Gestión de Obra</h4>
+                        <p className="text-sm text-gray-400 leading-relaxed">
+                            Control integral del proyecto para garantizar plazos y costes.
+                        </p>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            <span className="px-2 py-1 bg-white/5 rounded text-xs text-gray-300">Lean 5S</span>
+                            <span className="px-2 py-1 bg-white/5 rounded text-xs text-gray-300">Costes</span>
+                            <span className="px-2 py-1 bg-white/5 rounded text-xs text-gray-300">Plazos</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* Card 4: Interiorismo - 1x1 */}
-                <div className="bento-card-anim group col-span-1 md:col-span-1 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 p-6 flex flex-col justify-between hover:bg-neutral-800 transition-colors">
-                    <Layers className="text-action" />
-                    <div>
-                        <h4 className="text-white font-bold text-lg">Interiorismo</h4>
-                        <p className="text-xs text-gray-400">Estética y funcionalidad en armonía.</p>
+                <div className="bento-card-anim group col-span-1 md:col-span-1 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 p-8 flex flex-col justify-start gap-6 hover:bg-neutral-800 transition-colors">
+                    <div className="text-action">
+                        <Layers size={32} />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <h4 className="text-white font-bold text-xl">Interiorismo</h4>
+                        <p className="text-sm text-gray-400 leading-relaxed">
+                            Diseño que fusiona estética y funcionalidad en cada espacio.
+                        </p>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            <span className="px-2 py-1 bg-white/5 rounded text-xs text-gray-300">Lujo</span>
+                            <span className="px-2 py-1 bg-white/5 rounded text-xs text-gray-300">Confort</span>
+                            <span className="px-2 py-1 bg-white/5 rounded text-xs text-gray-300">Luz</span>
+                        </div>
                     </div>
                 </div>
 
-                {/* Card 5: Acabados Premium (Wide) - 2x1 */}
-                <div className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-800 border border-neutral-700 flex items-center p-8 hover:border-action transition-all">
-                    <div className="mr-6 p-4 bg-background rounded-2xl text-white">
-                        <PaintRoller size={32} />
+                {/* Card 5: Análisis de Proyecto (Wide) - 2x1 */}
+                <div
+                    onClick={() => setAnalysisModalOpen(true)}
+                    className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-800 border border-neutral-700 flex items-center p-8 hover:border-action transition-all cursor-pointer"
+                >
+                    <div className="mr-6 p-4 bg-background rounded-2xl text-white group-hover:bg-action/20 group-hover:text-action transition-colors">
+                        <FileSearch size={32} />
                     </div>
                     <div>
-                        <h3 className="text-2xl text-white font-bold">Materiales de Vanguardia</h3>
+                        <h3 className="text-2xl text-white font-bold">Análisis de Proyecto</h3>
                         <p className="text-gray-400">
-                            Seleccionamos componentes de última generación que combinan una resistencia extrema con texturas que redefinen el lujo contemporáneo.
+                            Evaluamos la viabilidad de tu proyecto, obra nueva o reforma. Solicita un estudio técnico y económico detallado.
                         </p>
                     </div>
                 </div>
 
                 {/* Card 6: Contacto - 2x1 */}
-                <div className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-2 relative overflow-hidden rounded-3xl bg-neutral-800 border border-neutral-700 flex items-center p-8 hover:border-action transition-all">
-                    <div className="mr-6 p-4 bg-background rounded-2xl text-white">
-                        <Phone size={32} />
+                <div className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 row-span-1 relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 flex flex-col justify-center p-8 hover:border-action transition-all">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 bg-white/5 rounded-xl text-white group-hover:bg-action group-hover:text-white transition-colors">
+                            <Phone size={24} />
+                        </div>
+                        <h3 className="text-2xl text-white font-bold tracking-tight">Contacto</h3>
                     </div>
-                    <div>
-                        <h3 className="text-2xl text-white font-bold">Contacto</h3>
-                        <div className="flex flex-col gap-2">
-                            <p className="text-gray-400">+34 666 666 666</p>
-                            <p className="text-gray-400">contacto@germanyconst.es</p>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path fill="#fff" d="M16.6 14c-.2-.1-1.5-.7-1.7-.8c-.2-.1-.4-.1-.6.1c-.2.2-.6.8-.8 1c-.1.2-.3.2-.5.1c-.7-.3-1.4-.7-2-1.2c-.5-.5-1-1.1-1.4-1.7c-.1-.2 0-.4.1-.5c.1-.1.2-.3.4-.4c.1-.1.2-.3.2-.4c.1-.1.1-.3 0-.4c-.1-.1-.6-1.3-.8-1.8c-.1-.7-.3-.7-.5-.7h-.5c-.2 0-.5.2-.6.3c-.6.6-.9 1.3-.9 2.1c.1.9.4 1.8 1 2.6c1.1 1.6 2.5 2.9 4.2 3.7c.5.2.9.4 1.4.5c.5.2 1 .2 1.6.1c.7-.1 1.3-.6 1.7-1.2c.2-.4.2-.8.1-1.2l-.4-.2m2.5-9.1C15.2 1 8.9 1 5 4.9c-3.2 3.2-3.8 8.1-1.6 12L2 22l5.3-1.4c1.5.8 3.1 1.2 4.7 1.2c5.5 0 9.9-4.4 9.9-9.9c.1-2.6-1-5.1-2.8-7m-2.7 14c-1.3.8-2.8 1.3-4.4 1.3c-1.5 0-2.9-.4-4.2-1.1l-.3-.2l-3.1.8l.8-3l-.2-.3c-2.4-4-1.2-9 2.7-11.5S16.6 3.7 19 7.5c2.4 3.9 1.3 9-2.6 11.4" /></svg>
+
+                    <div className="flex flex-col gap-4 w-full">
+                        <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group-hover:border-white/10 transition-colors">
+                            <span className="text-gray-400 text-sm">Teléfono</span>
+                            <span className="text-white font-mono text-sm">+34 900 000 000</span>
+                        </div>
+                        <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group-hover:border-white/10 transition-colors">
+                            <span className="text-gray-400 text-sm">Email</span>
+                            <span className="text-white font-mono text-sm">contacto@germanyconst.es</span>
+                        </div>
+                        <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group-hover:border-white/10 transition-colors">
+                            <span className="text-gray-400 text-sm">Oficina</span>
+                            <span className="text-white text-sm text-right">Barcelona, ES</span>
                         </div>
                     </div>
                 </div>
                 {/* Footer Module - 4x1 (Full Width) */}
-                <div className="bento-card-anim group p-8 gap-4 col-span-1 md:col-span-4 row-span-2 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-950 border border-neutral-800 flex flex-col justify-between hover:border-action transition-all cursor-default">
+                <div className="bento-card-anim group p-8 gap-4 col-span-1 md:col-span-4 row-span-1 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-950 border border-neutral-800 flex flex-col justify-between hover:border-action transition-all cursor-default min-h-[250px] md:min-h-0">
 
-                    <div className="flex justify-between items-start">
-                        <div className="flex gap-4 flex-col">
-                            <div>
-                                <h2 className="text-3xl font-serif text-action mb-2 tracking-tighter">GC</h2>
-                                <p className="text-neutral-400 text-sm max-w-xs">
-                                    Construcción y arquitectura de vanguardia. <br />
-                                    Alemania &bull; España
-                                </p>
-                            </div>
-                            <div>
-                                <p>Política de privacidad</p>
-                                <p>Términos y condiciones</p>
-                            </div>
-
+                    {/* Top Row: Brand & Socials */}
+                    <div className="flex justify-between items-start w-full">
+                        <div className="flex flex-col">
+                            <h2 className="text-3xl font-serif text-action mb-2 tracking-tighter">GC</h2>
+                            <p className="text-neutral-400 text-sm max-w-xs leading-relaxed">
+                                Construcción y arquitectura de vanguardia. <br />
+                                Alemania &bull; España
+                            </p>
                         </div>
                         <div className="flex gap-4">
-                            {/* Social/Contact Placeholders */}
-                            <div className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-white hover:bg-action transition-colors cursor-pointer">
+                            <a href="#" className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-white hover:bg-action transition-colors">
                                 <Linkedin size={18} />
-                            </div>
-                            <div className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-white hover:bg-action transition-colors cursor-pointer">
+                            </a>
+                            <a href="#" className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-white hover:bg-action transition-colors">
                                 <Instagram size={18} />
-                            </div>
+                            </a>
                         </div>
                     </div>
 
-                    <div className="flex flex-col md:flex-row justify-between items-end md:items-center mt-8 md:mt-0">
-                        <div className="text-neutral-500 text-xs">
+                    {/* Bottom Row: Policies & Copyright */}
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full mt-8 md:mt-0">
+                        <div className="flex flex-col gap-1 text-sm text-neutral-500 font-medium">
+                            <a href="/privacy" className="hover:text-white transition-colors">Política de privacidad</a>
+                            <a href="#" className="hover:text-white transition-colors">Términos y condiciones</a>
+                        </div>
+
+                        <div className="text-neutral-600 text-xs mt-6 md:mt-0 text-right">
                             &copy; {new Date().getFullYear()} Germany Const. Todos los derechos reservados.
                         </div>
                     </div>
                 </div>
 
             </div>
-        </section>
+            {analysisModalOpen && <ProjectAnalysisModal onClose={() => setAnalysisModalOpen(false)} />}
+        </section >
     );
 }

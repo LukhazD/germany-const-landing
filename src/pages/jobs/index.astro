@@ -1,0 +1,114 @@
+---
+import { getActiveJobOffers } from "../../lib/server/actions";
+
+const offers = await getActiveJobOffers();
+---
+
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bolsa de Empleo - Germany Construction</title>
+        <link href="/styles/global.css" rel="stylesheet" />
+    </head>
+    <body class="bg-[#1a1a1a] font-sans min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center mb-12">
+                <h1
+                    class="text-3xl font-extrabold text-white sm:text-5xl tracking-tight mb-4"
+                >
+                    Bolsa de Empleo
+                </h1>
+                <p class="max-w-2xl mx-auto text-xl text-gray-400">
+                    Únete a nuestro equipo y construye el futuro con nosotros en
+                    <span class="text-action font-semibold"> Alemania</span>.
+                </p>
+            </div>
+
+            {
+                offers.length === 0 ? (
+                    <div class="text-center py-12 bg-neutral-900 rounded-3xl border border-neutral-800">
+                        <p class="text-gray-400 text-lg">
+                            Actualmente no hay vacantes disponibles. Vuelve
+                            pronto.
+                        </p>
+                    </div>
+                ) : (
+                    <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+                        {offers.map((offer: any) => (
+                            <div class="group bg-neutral-900 overflow-hidden shadow-lg rounded-3xl border border-neutral-800 hover:border-action transition-all duration-300 flex flex-col justify-between">
+                                <div class="px-8 py-6">
+                                    <h3 class="text-xl font-bold leading-6 text-white mb-3">
+                                        <a
+                                            href={`/jobs/${offer.slug}`}
+                                            class="hover:text-action transition-colors"
+                                        >
+                                            {offer.title}
+                                        </a>
+                                    </h3>
+                                    <div class="flex items-center text-sm text-gray-400 mb-4">
+                                        <svg
+                                            class="flex-shrink-0 mr-1.5 h-5 w-5 text-action"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                            />
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                        </svg>
+                                        {offer.location ||
+                                            "Ubicación no especificada"}
+                                    </div>
+                                    <p class="text-sm text-gray-400 mb-6 line-clamp-3 leading-relaxed">
+                                        {offer.description}
+                                    </p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-neutral-800 text-gray-300 border border-neutral-700">
+                                            {offer.salaryMin && offer.salaryMax
+                                                ? `${offer.salaryMin} - ${offer.salaryMax} €/mes`
+                                                : offer.salaryMin
+                                                  ? `Desde ${offer.salaryMin} €/mes`
+                                                  : offer.salaryMax
+                                                    ? `Hasta ${offer.salaryMax} €/mes`
+                                                    : "Salario Competitivo"}
+                                        </span>
+                                        <span class="text-xs text-gray-400">
+                                            Hace{" "}
+                                            {Math.floor(
+                                                (Date.now() -
+                                                    new Date(
+                                                        offer.createdAt,
+                                                    ).getTime()) /
+                                                    (1000 * 60 * 60 * 24),
+                                            )}{" "}
+                                            días
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="bg-neutral-800/50 px-8 py-4 flex justify-end border-t border-neutral-800 group-hover:bg-neutral-800 transition-colors">
+                                    <a
+                                        href={`/jobs/${offer.slug}`}
+                                        class="text-sm font-bold text-white group-hover:text-action flex items-center gap-2 transition-colors"
+                                    >
+                                        Ver detalles{" "}
+                                        <span aria-hidden="true">&rarr;</span>
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+    </body>
+</html>

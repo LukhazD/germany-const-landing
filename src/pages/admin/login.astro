@@ -1,0 +1,105 @@
+---
+
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin Login - Germany Construction</title>
+    </head>
+    <body class="bg-background min-h-screen flex items-center justify-center">
+        <div
+            class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 shadow-xl w-full max-w-sm"
+        >
+            <h1
+                class="text-3xl font-bold mb-8 text-center text-white tracking-tight"
+            >
+                Admin <span class="text-action">Panel</span>
+            </h1>
+
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label
+                        for="user"
+                        class="block text-sm font-medium text-gray-400 mb-2"
+                        >Usuario</label
+                    >
+                    <input
+                        type="text"
+                        id="user"
+                        name="user"
+                        required
+                        class="block w-full bg-neutral-800 border border-neutral-700 rounded-xl py-3 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-action focus:border-transparent transition-all outline-none"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="pass"
+                        class="block text-sm font-medium text-gray-400 mb-2"
+                        >Contraseña</label
+                    >
+                    <input
+                        type="password"
+                        id="pass"
+                        name="pass"
+                        required
+                        class="block w-full bg-neutral-800 border border-neutral-700 rounded-xl py-3 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-action focus:border-transparent transition-all outline-none"
+                    />
+                </div>
+
+                <div
+                    id="error"
+                    class="bg-luxury/20 border border-luxury text-red-200 text-sm p-3 rounded-lg hidden text-center"
+                >
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-action text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-action/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-action"
+                >
+                    Ingresar
+                </button>
+            </form>
+        </div>
+
+        <script>
+            const form = document.getElementById("loginForm");
+            const errorDiv = document.getElementById("error");
+
+            if (form instanceof HTMLFormElement && errorDiv) {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    errorDiv.classList.add("hidden");
+                    errorDiv.innerText = "";
+
+                    const formData = new FormData(form);
+                    const data = Object.fromEntries(formData);
+
+                    try {
+                        const res = await fetch("/api/auth/login", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data),
+                        });
+
+                        const result = await res.json();
+
+                        if (res.ok && result.success) {
+                            // Redirect using replace to modify history
+                            window.location.replace("/admin");
+                        } else {
+                            throw new Error(result.error || "Login failed");
+                        }
+                    } catch (err) {
+                        // @ts-ignore
+                        errorDiv.innerText = err.message || "An error occurred";
+                        errorDiv.classList.remove("hidden");
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

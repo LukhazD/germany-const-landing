@@ -29,10 +29,12 @@ import Cursor from "../components/react/Cursor";
       }
     </style>
   </head>
-  <body class="antialiased bg-background overflow-x-hidden">
+  <body
+    class="antialiased bg-background overflow-x-hidden min-h-screen flex flex-col"
+  >
     <Cursor client:only="react" />
 
-    <main>
+    <main class="flex-grow w-full">
       <Hero client:only="react" />
       <BentoGrid client:only="react" />
     </main>

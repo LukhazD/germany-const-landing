@@ -1,0 +1,742 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { verifyToken } from "../../../lib/server/auth";
+import connectDB from "../../../lib/server/db";
+import Application from "../../../lib/server/models/Application";
+import JobOffer from "../../../lib/server/models/JobOffer";
+import { Types } from "mongoose";
+
+const { id } = Astro.params;
+const token = Astro.cookies.get("admin_token")?.value;
+
+if (!token || !verifyToken(token)) {
+    return Astro.redirect("/admin/login");
+}
+
+if (!id || !Types.ObjectId.isValid(id)) {
+    return Astro.redirect("/admin");
+}
+
+await connectDB();
+
+const offer = await JobOffer.findById(id);
+if (!offer) {
+    return Astro.redirect("/admin");
+}
+
+const page = parseInt(Astro.url.searchParams.get("page") || "1");
+const statusFilter = Astro.url.searchParams.get("status") || "all";
+const limit = 10;
+const skip = (page - 1) * limit;
+
+const query: any = { jobOfferId: id };
+if (statusFilter !== "all") {
+    query.status = statusFilter;
+}
+
+const totaledHelper = await Application.countDocuments(query);
+const totalPages = Math.ceil(totaledHelper / limit);
+
+const applications = await Application.find(query)
+    .sort({ submittedAt: -1 })
+    .skip(skip)
+    .limit(limit);
+---
+
+<AdminLayout title={`Postulaciones - ${offer.title}`}>
+    <div
+        class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+    >
+        <div>
+            <a
+                href="/admin"
+                class="text-gray-400 hover:text-white mb-2 inline-flex items-center transition-colors text-sm"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 mr-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Volver al Dashboard
+            </a>
+            <h1
+                class="text-3xl font-bold leading-tight text-white tracking-tight"
+            >
+                Postulaciones: <span class="text-action">{offer.title}</span>
+            </h1>
+        </div>
+        <div class="flex gap-2 bg-neutral-800 p-1 rounded-xl">
+            {
+                ["all", "pending", "reviewed", "hired", "rejected"].map(
+                    (filter) => (
+                        <a
+                            href={`?status=${filter}&page=1`}
+                            class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                statusFilter === filter
+                                    ? "bg-neutral-700 text-white shadow-sm"
+                                    : "text-gray-400 hover:text-white hover:bg-neutral-700/50"
+                            }`}
+                        >
+                            {filter === "all"
+                                ? "Todos"
+                                : filter === "pending"
+                                  ? "Pendientes"
+                                  : filter === "reviewed"
+                                    ? "Revisados"
+                                    : filter === "hired"
+                                      ? "Contratados"
+                                      : "Rechazados"}
+                        </a>
+                    ),
+                )
+            }
+        </div>
+    </div>
+
+    {
+        applications.length === 0 ? (
+            <div class="text-center py-12 bg-neutral-900 rounded-3xl border border-neutral-800 shadow-sm">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-12 w-12 text-neutral-700 mx-auto mb-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                </svg>
+                <p class="text-gray-400 text-lg">
+                    Aún no hay postulaciones para esta oferta.
+                </p>
+            </div>
+        ) : (
+            <div class="bg-neutral-900 shadow-xl overflow-hidden sm:rounded-3xl border border-neutral-800">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-neutral-800">
+                        <thead class="bg-neutral-800">
+                            <tr>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider"
+                                >
+                                    Candidato
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider"
+                                >
+                                    CV
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider"
+                                >
+                                    Fecha
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider"
+                                >
+                                    Estado
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider"
+                                >
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-neutral-900 divide-y divide-neutral-800">
+                            {applications.map((app) => (
+                                <tr
+                                    class="hover:bg-neutral-800/50 transition-colors cursor-pointer candidate-row"
+                                    data-app={JSON.stringify(app)}
+                                >
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div>
+                                                <div class="text-sm font-medium text-white">
+                                                    {app.candidateName}
+                                                </div>
+                                                <div class="text-sm text-gray-500">
+                                                    {app.candidateEmail}
+                                                </div>
+                                                <div class="mt-2 text-xs text-gray-400 space-y-1">
+                                                    <p>
+                                                        Incorporación:{" "}
+                                                        <span class="text-white">
+                                                            {app.incorporation ===
+                                                            "15_dias"
+                                                                ? "15 días"
+                                                                : app.incorporation ===
+                                                                    "1_mes"
+                                                                  ? "1 mes"
+                                                                  : app.incorporation}
+                                                        </span>
+                                                    </p>
+                                                    <p>
+                                                        Vehículo:{" "}
+                                                        <span
+                                                            class={
+                                                                app.hasVehicle
+                                                                    ? "text-green-400"
+                                                                    : "text-gray-500"
+                                                            }
+                                                        >
+                                                            {app.hasVehicle
+                                                                ? "Sí"
+                                                                : "No"}
+                                                        </span>
+                                                    </p>
+                                                    {app.trainingInterest && (
+                                                        <p class="text-secondary font-medium">
+                                                            Interesado en
+                                                            Formación
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <a
+                                            href={`/api/admin/download-cv?url=${encodeURIComponent(app.cvUrl)}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="text-action hover:text-orange-400 text-sm font-medium inline-flex items-center"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 mr-1"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                />
+                                            </svg>
+                                            Ver CV
+                                        </a>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-400">
+                                            {new Date(
+                                                app.submittedAt,
+                                            ).toLocaleDateString()}
+                                        </div>
+                                        <div class="text-xs text-neutral-600">
+                                            {new Date(
+                                                app.submittedAt,
+                                            ).toLocaleTimeString()}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${
+                                                app.status === "hired"
+                                                    ? "bg-green-900/30 text-green-400 border-green-800"
+                                                    : app.status === "rejected"
+                                                      ? "bg-luxury/20 text-red-300 border-luxury"
+                                                      : app.status ===
+                                                          "reviewed"
+                                                        ? "bg-blue-900/30 text-blue-400 border-blue-800"
+                                                        : "bg-neutral-800 text-gray-400 border-neutral-700"
+                                            }`}
+                                        >
+                                            {app.status === "pending"
+                                                ? "Pendiente"
+                                                : app.status === "reviewed"
+                                                  ? "Revisado"
+                                                  : app.status === "hired"
+                                                    ? "Contratado"
+                                                    : "Rechazado"}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <select
+                                            class="bg-neutral-800 text-white text-xs rounded-lg border border-neutral-700 focus:ring-action focus:border-action p-2 status-select"
+                                            data-id={app._id}
+                                            data-current={app.status}
+                                        >
+                                            <option
+                                                value="pending"
+                                                selected={
+                                                    app.status === "pending"
+                                                }
+                                            >
+                                                Pendiente
+                                            </option>
+                                            <option
+                                                value="reviewed"
+                                                selected={
+                                                    app.status === "reviewed"
+                                                }
+                                            >
+                                                Revisado
+                                            </option>
+                                            <option
+                                                value="hired"
+                                                selected={
+                                                    app.status === "hired"
+                                                }
+                                            >
+                                                Contratado
+                                            </option>
+                                            <option
+                                                value="rejected"
+                                                selected={
+                                                    app.status === "rejected"
+                                                }
+                                            >
+                                                Rechazado
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {totalPages > 1 && (
+                    <div class="bg-neutral-800 px-4 py-3 flex items-center justify-between border-t border-neutral-800 sm:px-6">
+                        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-gray-400">
+                                    Mostrando{" "}
+                                    <span class="font-medium text-white">
+                                        {skip + 1}
+                                    </span>{" "}
+                                    a{" "}
+                                    <span class="font-medium text-white">
+                                        {Math.min(skip + limit, totaledHelper)}
+                                    </span>{" "}
+                                    de{" "}
+                                    <span class="font-medium text-white">
+                                        {totaledHelper}
+                                    </span>{" "}
+                                    resultados
+                                </p>
+                            </div>
+                            <div>
+                                <nav
+                                    class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                                    aria-label="Pagination"
+                                >
+                                    {page > 1 && (
+                                        <a
+                                            href={`?page=${page - 1}`}
+                                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-neutral-700 bg-neutral-900 text-sm font-medium text-gray-400 hover:bg-neutral-800"
+                                        >
+                                            <span class="sr-only">
+                                                Anterior
+                                            </span>
+                                            <svg
+                                                class="h-5 w-5"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                                    clip-rule="evenodd"
+                                                />
+                                            </svg>
+                                        </a>
+                                    )}
+                                    {page < totalPages && (
+                                        <a
+                                            href={`?page=${page + 1}`}
+                                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-neutral-700 bg-neutral-900 text-sm font-medium text-gray-400 hover:bg-neutral-800"
+                                        >
+                                            <span class="sr-only">
+                                                Siguiente
+                                            </span>
+                                            <svg
+                                                class="h-5 w-5"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                                    clip-rule="evenodd"
+                                                />
+                                            </svg>
+                                        </a>
+                                    )}
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        )
+    }
+
+    {/* Candidate Details Modal */}
+    <div
+        id="candidateModal"
+        class="fixed inset-0 z-50 hidden overflow-y-auto"
+        aria-labelledby="modal-title"
+        role="dialog"
+        aria-modal="true"
+    >
+        <div
+            class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+        >
+            <div
+                class="fixed inset-0 bg-neutral-900/80 transition-opacity backdrop-blur-sm"
+                aria-hidden="true"
+                id="modalBackdrop"
+            >
+            </div>
+
+            <span
+                class="hidden sm:inline-block sm:align-middle sm:h-screen"
+                aria-hidden="true">&#8203;</span
+            >
+
+            <div
+                class="inline-block align-bottom bg-neutral-900 rounded-3xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full border border-neutral-800"
+            >
+                <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full"
+                        >
+                            <h3
+                                class="text-2xl leading-6 font-bold text-white mb-2"
+                                id="modalCandidateName"
+                            >
+                                Nombre Candidato
+                            </h3>
+                            <p
+                                class="text-gray-400 mb-6"
+                                id="modalCandidateEmail"
+                            >
+                                email@ejemplo.com
+                            </p>
+
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"
+                            >
+                                <div
+                                    class="bg-neutral-800/50 p-4 rounded-xl border border-neutral-700/50"
+                                >
+                                    <h4
+                                        class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-2"
+                                    >
+                                        Detalles
+                                    </h4>
+                                    <div class="space-y-2 text-sm">
+                                        <p class="flex justify-between">
+                                            <span class="text-gray-500"
+                                                >Incorporación:</span
+                                            >
+                                            <span
+                                                class="text-white"
+                                                id="modalIncorporation"
+                                                >Inmediata</span
+                                            >
+                                        </p>
+                                        <p class="flex justify-between">
+                                            <span class="text-gray-500"
+                                                >Vehículo:</span
+                                            >
+                                            <span
+                                                class="text-white"
+                                                id="modalVehicle">Sí</span
+                                            >
+                                        </p>
+                                        <p class="flex justify-between">
+                                            <span class="text-gray-500"
+                                                >Interés Formación:</span
+                                            >
+                                            <span
+                                                class="text-white"
+                                                id="modalTraining">Sí</span
+                                            >
+                                        </p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-neutral-800/50 p-4 rounded-xl border border-neutral-700/50"
+                                >
+                                    <h4
+                                        class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-2"
+                                    >
+                                        GDPR
+                                    </h4>
+                                    <div class="space-y-2 text-sm">
+                                        <p class="flex justify-between">
+                                            <span class="text-gray-500"
+                                                >Aceptado:</span
+                                            >
+                                            <span class="text-green-400"
+                                                >Sí</span
+                                            >
+                                        </p>
+                                        <p class="flex justify-between">
+                                            <span class="text-gray-500"
+                                                >Fecha:</span
+                                            >
+                                            <span
+                                                class="text-white"
+                                                id="modalGdprDate">-</span
+                                            >
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4
+                                    class="text-sm font-bold text-gray-300 uppercase tracking-wider mb-2"
+                                >
+                                    Carta de Presentación
+                                </h4>
+                                <div
+                                    class="bg-neutral-800 p-4 rounded-xl text-gray-300 text-sm whitespace-pre-wrap max-h-60 overflow-y-auto"
+                                    id="modalCoverLetter"
+                                >
+                                    Sin carta de presentación.
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-neutral-800"
+                            >
+                                <a
+                                    href="#"
+                                    target="_blank"
+                                    id="modalCvLink"
+                                    class="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 px-4 rounded-xl text-center transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="h-5 w-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                        ></path>
+                                    </svg>
+                                    Ver CV Completo
+                                </a>
+                                <div class="flex-1 relative group">
+                                    <select
+                                        id="modalStatusSelect"
+                                        class="appearance-none block w-full bg-transparent hover:bg-orange-600 text-white font-bold py-3 px-4 pr-8 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-action cursor-pointer text-center transition-colors"
+                                    >
+                                        <option
+                                            value="pending"
+                                            class="bg-neutral-800 text-white text-left"
+                                            >Marcar como Pendiente</option
+                                        >
+                                        <option
+                                            value="reviewed"
+                                            class="bg-neutral-800 text-white text-left"
+                                            >Marcar como Revisado</option
+                                        >
+                                        <option
+                                            value="hired"
+                                            class="bg-neutral-800 text-white text-left"
+                                            >Marcar como Contratado</option
+                                        >
+                                        <option
+                                            value="rejected"
+                                            class="bg-neutral-800 text-white text-left"
+                                            >Marcar como Rechazado</option
+                                        >
+                                    </select>
+                                    <div
+                                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white"
+                                    >
+                                        <svg
+                                            class="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                            ><path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path></svg
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-neutral-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse"
+                >
+                    <button
+                        type="button"
+                        id="closeModalBtn"
+                        class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-neutral-700 text-base font-medium text-white hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors"
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script is:inline>
+        // Use is:inline to avoid scope issues with quick DOM manipulation or ensure simple global access if needed
+        const modal = document.getElementById("candidateModal");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const modalBackdrop = document.getElementById("modalBackdrop");
+        const candidateRows = document.querySelectorAll(".candidate-row");
+        const modalStatusSelect = document.getElementById("modalStatusSelect");
+        let currentAppId = null;
+
+        function openModal(appData) {
+            currentAppId = appData._id;
+            document.getElementById("modalCandidateName").textContent =
+                appData.candidateName;
+            document.getElementById("modalCandidateEmail").textContent =
+                appData.candidateEmail;
+            document.getElementById("modalIncorporation").textContent =
+                appData.incorporation === "15_dias"
+                    ? "15 días"
+                    : appData.incorporation === "1_mes"
+                      ? "1 mes"
+                      : appData.incorporation;
+
+            const vehicleEl = document.getElementById("modalVehicle");
+            vehicleEl.textContent = appData.hasVehicle ? "Sí" : "No";
+            vehicleEl.className = appData.hasVehicle
+                ? "text-green-400 font-bold"
+                : "text-gray-500";
+
+            const trainingEl = document.getElementById("modalTraining");
+            trainingEl.textContent = appData.trainingInterest ? "Sí" : "No";
+            trainingEl.className = appData.trainingInterest
+                ? "text-secondary font-bold"
+                : "text-gray-500";
+
+            document.getElementById("modalGdprDate").textContent = new Date(
+                appData.gdprConsentDate,
+            ).toLocaleDateString();
+            document.getElementById("modalCoverLetter").textContent =
+                appData.coverLetter || "Sin carta de presentación.";
+
+            const cvLink = document.getElementById("modalCvLink");
+            cvLink.href = `/api/admin/download-cv?url=${encodeURIComponent(appData.cvUrl)}`;
+
+            if (modalStatusSelect) {
+                modalStatusSelect.value = appData.status;
+            }
+
+            modal.classList.remove("hidden");
+        }
+
+        function closeModal() {
+            modal.classList.add("hidden");
+            currentAppId = null;
+        }
+
+        closeModalBtn?.addEventListener("click", closeModal);
+        modalBackdrop?.addEventListener("click", closeModal);
+
+        // Row Click Handler
+        candidateRows.forEach((row) => {
+            row.addEventListener("click", (e) => {
+                // Ignore clicks on selects or links inside the row
+                if (e.target.closest("select") || e.target.closest("a")) return;
+
+                const appData = JSON.parse(row.dataset.app);
+                openModal(appData);
+            });
+        });
+
+        // Status Change in Modal
+        modalStatusSelect?.addEventListener("change", async (e) => {
+            if (!currentAppId) return;
+            const newStatus = e.target.value;
+
+            try {
+                const res = await fetch(
+                    `/api/admin/applications/${currentAppId}`,
+                    {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: newStatus }),
+                    },
+                );
+
+                if (res.ok) {
+                    window.location.reload();
+                } else {
+                    alert("Error al actualizar estado");
+                }
+            } catch (error) {
+                alert("Error de conexión");
+            }
+        });
+    </script>
+    <script>
+        // Existing script for table selects (keep this for direct table updates if user prefers)
+        const selects = document.querySelectorAll(".status-select");
+        selects.forEach((select) => {
+            select.addEventListener("change", async (e) => {
+                const target = e.target;
+                if (!(target instanceof HTMLSelectElement)) return;
+                const id = target.dataset.id;
+                const newStatus = target.value;
+                const originalStatus = target.dataset.current;
+
+                try {
+                    target.disabled = true;
+                    target.classList.add("opacity-50");
+
+                    const res = await fetch(`/api/admin/applications/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: newStatus }),
+                    });
+
+                    if (!res.ok) throw new Error("Failed");
+
+                    window.location.reload();
+                } catch (error) {
+                    alert("Error al actualizar");
+                    target.value = originalStatus || "pending";
+                    target.disabled = false;
+                    target.classList.remove("opacity-50");
+                }
+            });
+        });
+    </script>
+</AdminLayout>

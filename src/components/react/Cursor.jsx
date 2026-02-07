@@ -58,7 +58,7 @@ export default function Cursor() {
     return (
         <div
             ref={cursorRef}
-            className="fixed top-0 left-0 w-3 h-3 bg-action rounded-full pointer-events-none z-50 -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
+            className="fixed top-0 left-0 w-3 h-3 bg-action rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
             style={{ willChange: 'transform' }}
         />
     );

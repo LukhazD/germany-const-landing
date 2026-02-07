@@ -1,0 +1,414 @@
+---
+import { getJobOfferBySlug, submitApplication } from "../../lib/server/actions";
+
+const { id } = Astro.params;
+const slug = id; // Astro dynamic routes use the param name
+
+const offer = await getJobOfferBySlug(slug as string);
+
+if (!offer) {
+    return Astro.redirect("/jobs");
+}
+
+// Ensure requirements is an array
+const requirements = Array.isArray(offer.requirements)
+    ? offer.requirements
+    : [];
+
+let error = "";
+let success = false;
+
+if (Astro.request.method === "POST") {
+    try {
+        const formData = await Astro.request.formData();
+        await submitApplication(formData, offer._id.toString());
+        success = true;
+    } catch (e: any) {
+        error = e.message;
+    }
+}
+---
+
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{offer.title} - Germany Construction</title>
+        <link href="/styles/global.css" rel="stylesheet" />
+    </head>
+    <body class="bg-[#1a1a1a] font-sans min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 py-12">
+            <a
+                href="/jobs"
+                class="text-gray-400 hover:text-white mb-6 inline-flex items-center transition-colors font-medium"
+                ><span class="mr-2">&larr;</span> Volver a Ofertas</a
+            >
+
+            <div
+                class="bg-neutral-900 shadow-xl overflow-hidden sm:rounded-3xl border border-neutral-800 mb-8"
+            >
+                <div class="px-8 py-8 sm:px-10">
+                    <h1
+                        class="text-3xl font-extrabold leading-tight text-white mb-2"
+                    >
+                        {offer.title}
+                    </h1>
+                    <p class="mt-2 max-w-2xl text-lg text-gray-400">
+                        {offer.location}
+                        {
+                            offer.location && (offer.salaryMin || offer.salaryMax) && (
+                                <span class="mx-2 text-action">•</span>
+                            )
+                        }
+                        {offer.salaryMin && offer.salaryMax
+                            ? `${offer.salaryMin} - ${offer.salaryMax} €/mes`
+                            : offer.salaryMin
+                              ? `Desde ${offer.salaryMin} €/mes`
+                              : offer.salaryMax
+                                ? `Hasta ${offer.salaryMax} €/mes`
+                                : ""}
+                    </p>
+                </div>
+                <div class="border-t border-neutral-800 px-8 py-8 sm:px-10">
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                        <div class="sm:col-span-2">
+                            <dt
+                                class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3"
+                            >
+                                Descripción
+                            </dt>
+                            <dd
+                                class="mt-1 text-base text-gray-300 whitespace-pre-wrap leading-relaxed"
+                            >
+                                {offer.description}
+                            </dd>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <dt
+                                class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3"
+                            >
+                                Requisitos
+                            </dt>
+                            <dd class="mt-1 text-base text-gray-300">
+                                <ul
+                                    class="list-disc pl-5 space-y-2 marker:text-action"
+                                >
+                                    {
+                                        requirements.map((req: string) => (
+                                            <li>{req}</li>
+                                        ))
+                                    }
+                                </ul>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <div
+                class="bg-neutral-900 shadow-xl sm:rounded-3xl border border-neutral-800"
+            >
+                <div class="px-8 py-8 sm:p-10">
+                    <h3 class="text-2xl leading-6 font-bold text-white mb-6">
+                        Postularse a esta oferta
+                    </h3>
+
+                    {
+                        success ? (
+                            <div class="mt-4 bg-green-900/30 border border-green-800 text-green-300 px-6 py-4 rounded-xl">
+                                <p class="font-bold text-lg mb-2">
+                                    ¡Postulación enviada con éxito!
+                                </p>
+                                <p>
+                                    Hemos recibido tus datos. Nos pondremos en
+                                    contacto contigo si tu perfil encaja con la
+                                    vacante.
+                                </p>
+                            </div>
+                        ) : (
+                            <form
+                                method="POST"
+                                enctype="multipart/form-data"
+                                class="mt-6 space-y-6"
+                            >
+                                {error && (
+                                    <div class="bg-luxury/20 border border-luxury text-red-200 px-6 py-4 rounded-xl">
+                                        {error}
+                                    </div>
+                                )}
+
+                                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    <div>
+                                        <label
+                                            for="candidateName"
+                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                        >
+                                            Nombre Completo
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="candidateName"
+                                            id="candidateName"
+                                            required
+                                            class="block w-full bg-neutral-800 border border-neutral-700 rounded-xl py-3 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-action focus:border-transparent transition-all outline-none"
+                                            placeholder="Tu nombre completo"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            for="candidateEmail"
+                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                        >
+                                            Correo Electrónico
+                                        </label>
+                                        <input
+                                            type="email"
+                                            name="candidateEmail"
+                                            id="candidateEmail"
+                                            required
+                                            class="block w-full bg-neutral-800 border border-neutral-700 rounded-xl py-3 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-action focus:border-transparent transition-all outline-none"
+                                            placeholder="tucorreo@ejemplo.com"
+                                        />
+                                    </div>
+                                    
+                                    <div>
+                                        <label
+                                            for="incorporation"
+                                            class="block text-sm font-medium text-gray-300 mb-2"
+                                        >
+                                            Tiempo de Incorporación
+                                        </label>
+                                        <select
+                                            name="incorporation"
+                                            id="incorporation"
+                                            required
+                                            class="block w-full bg-neutral-800 border border-neutral-700 rounded-xl py-3 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-action focus:border-transparent transition-all outline-none appearance-none"
+                                        >
+                                            <option value="" disabled selected>Selecciona una opción</option>
+                                            <option value="inmediata">Inmediata</option>
+                                            <option value="15_dias">15 días</option>
+                                            <option value="1_mes">1 mes</option>
+                                            <option value="other">Otro</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                                            ¿Cuenta con vehículo propio?
+                                        </label>
+                                        <div class="flex gap-4 mt-3">
+                                            <label class="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="hasVehicle"
+                                                    value="true"
+                                                    required
+                                                    class="form-radio text-action focus:ring-action bg-neutral-800 border-neutral-700 h-4 w-4"
+                                                />
+                                                <span class="ml-2 text-gray-300">Sí</span>
+                                            </label>
+                                            <label class="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="hasVehicle"
+                                                    value="false"
+                                                    required
+                                                    class="form-radio text-action focus:ring-action bg-neutral-800 border-neutral-700 h-4 w-4"
+                                                />
+                                                <span class="ml-2 text-gray-300">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="sm:col-span-2">
+                                         <label class="inline-flex items-center p-3 bg-neutral-800/50 rounded-xl border border-neutral-700/50 w-full cursor-pointer hover:bg-neutral-800 transition-colors">
+                                            <input
+                                                type="checkbox"
+                                                name="trainingInterest"
+                                                class="form-checkbox text-action focus:ring-action bg-neutral-800 border-neutral-500 rounded h-5 w-5"
+                                            />
+                                            <span class="ml-3 text-gray-300">
+                                                Estoy interesado en recibir formación por parte de la empresa
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label
+                                        for="coverLetter"
+                                        class="block text-sm font-medium text-gray-300 mb-2"
+                                    >
+                                        Carta de Presentación (Opcional)
+                                    </label>
+                                    <textarea
+                                        id="coverLetter"
+                                        name="coverLetter"
+                                        rows="4"
+                                        class="block w-full bg-neutral-800 border border-neutral-700 rounded-xl py-3 px-4 text-white placeholder-gray-500 focus:ring-2 focus:ring-action focus:border-transparent transition-all outline-none"
+                                        placeholder="Cuéntanos por qué eres ideal para este puesto..."
+                                    />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">
+                                        CV / Hoja de Vida (PDF, Max 5MB)
+                                    </label>
+                                    <div
+                                        id="dropzone"
+                                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-700 border-dashed rounded-xl hover:border-action/50 transition-colors bg-neutral-800/30 cursor-pointer relative"
+                                    >
+                                        <div class="space-y-1 text-center pointer-events-none">
+                                            <svg
+                                                class="mx-auto h-12 w-12 text-gray-500"
+                                                stroke="currentColor"
+                                                fill="none"
+                                                viewBox="0 0 48 48"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                />
+                                            </svg>
+                                            <div class="flex text-sm text-gray-400 justify-center">
+                                                <span
+                                                    class="relative rounded-md font-medium text-action hover:text-orange-400 focus-within:outline-none"
+                                                >
+                                                    Subir un archivo
+                                                </span>
+                                                <p class="pl-1">
+                                                    o arrastrar y soltar
+                                                </p>
+                                            </div>
+                                            <p
+                                                id="file-name"
+                                                class="text-xs text-gray-500"
+                                            >
+                                                PDF, DOC, DOCX hasta 5MB
+                                            </p>
+                                        </div>
+                                        <input
+                                            id="cv"
+                                            name="cv"
+                                            type="file"
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                            required
+                                            accept=".pdf,.doc,.docx"
+                                        />
+                                    </div>
+                                </div>
+
+                                <script>
+                                    const dropzone = document.getElementById("dropzone");
+                                    const fileInput = document.getElementById("cv") as HTMLInputElement;
+                                    const fileNameDisplay = document.getElementById("file-name");
+
+                                    if (dropzone && fileInput && fileNameDisplay) {
+                                        // Drag and drop visual feedback
+                                        ["dragenter", "dragover"].forEach((eventName) => {
+                                            dropzone.addEventListener(eventName, (e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                dropzone.classList.add(
+                                                    "border-action",
+                                                    "bg-neutral-800",
+                                                );
+                                                dropzone.classList.remove(
+                                                    "border-neutral-700",
+                                                    "bg-neutral-800/30",
+                                                );
+                                            });
+                                        });
+
+                                        ["dragleave", "drop"].forEach((eventName) => {
+                                            dropzone.addEventListener(eventName, (e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                dropzone.classList.remove(
+                                                    "border-action",
+                                                    "bg-neutral-800",
+                                                );
+                                                dropzone.classList.add(
+                                                    "border-neutral-700",
+                                                    "bg-neutral-800/30",
+                                                );
+                                            });
+                                        });
+
+                                        // Handle file drop
+                                        dropzone.addEventListener("drop", (e) => {
+                                            const dt = (e as DragEvent).dataTransfer;
+                                            const files = dt?.files;
+
+                                            if (files && files.length > 0) {
+                                                fileInput.files = files;
+                                                updateFileName(files[0].name);
+                                            }
+                                        });
+
+                                        // Handle manual selection
+                                        fileInput.addEventListener("change", () => {
+                                            if (
+                                                fileInput.files &&
+                                                fileInput.files.length > 0
+                                            ) {
+                                                updateFileName(fileInput.files[0].name);
+                                            }
+                                        });
+
+                                        function updateFileName(name: string) {
+                                            if (fileNameDisplay) {
+                                                fileNameDisplay.textContent = `Archivo seleccionado: ${name}`;
+                                                fileNameDisplay.classList.add("text-action", "font-bold");
+                                            }
+                                        }
+                                    }
+                                </script>
+                                <div class="flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input
+                                            id="gdprConsent"
+                                            name="gdprConsent"
+                                            type="checkbox"
+                                            required
+                                            class="focus:ring-action h-4 w-4 text-action border-neutral-700 rounded bg-neutral-800"
+                                        />
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label
+                                            for="gdprConsent"
+                                            class="font-medium text-gray-300"
+                                        >
+                                            Acepto la <a
+                                                href="/privacy"
+                                                target="_blank"
+                                                class="text-action hover:underline"
+                                                >Política de Privacidad</a> y el tratamiento de mis datos personales
+                                        </label>
+                                        <p class="text-gray-500">
+                                            Tus datos serán utilizados únicamente para el
+                                            proceso de selección.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="pt-2">
+                                    <button
+                                        type="submit"
+                                        class="w-full flex justify-center py-4 px-6 border border-transparent text-base font-bold rounded-xl text-white bg-action hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-action shadow-lg shadow-action/20 transition-all transform hover:scale-[1.01]"
+                                    >
+                                        Enviar Postulación
+                                    </button>
+                                </div>
+                            </form>
+                        )
+                    }
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
