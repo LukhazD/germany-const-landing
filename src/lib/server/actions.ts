@@ -65,7 +65,7 @@ const ApplicationSchema = z.object({
 export async function loginAdmin(user: string, pass: string) {
     // 1. Check Credentials
     if (user !== ADMIN_USER || pass !== ADMIN_PASS) {
-        throw new Error('Unauthorized: Invalid Admin Credentials');
+        throw new Error('Usuario o contraseña incorrectos');
     }
 
     // 2. Generate Token
