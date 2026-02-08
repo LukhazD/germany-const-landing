@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         return new Response("Missing URL param", { status: 400 });
     }
 
-    const bucketName = import.meta.env.S3_BUCKET_NAME || "germany-const";
+    const bucketName = process.env.S3_BUCKET_NAME || import.meta.env.S3_BUCKET_NAME || "germany-const";
     let key = cvUrl;
 
     try {
@@ -40,11 +40,11 @@ export const GET: APIRoute = async ({ request, cookies }) => {
 
     try {
         const s3 = new S3Client({
-            region: import.meta.env.S3_REGION || "us-east-1",
-            endpoint: import.meta.env.S3_ENDPOINT,
+            region: process.env.S3_REGION || import.meta.env.S3_REGION || "us-east-1",
+            endpoint: process.env.S3_ENDPOINT || import.meta.env.S3_ENDPOINT,
             credentials: {
-                accessKeyId: import.meta.env.S3_ACCESS_KEY,
-                secretAccessKey: import.meta.env.S3_SECRET_KEY,
+                accessKeyId: process.env.S3_ACCESS_KEY || import.meta.env.S3_ACCESS_KEY || '',
+                secretAccessKey: process.env.S3_SECRET_KEY || import.meta.env.S3_SECRET_KEY || '',
             },
             forcePathStyle: true,
         });
