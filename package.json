@@ -48,6 +48,8 @@
   "devDependencies": {
     "@types/d3": "^7.4.3",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/parser": "^8.48.1",
     "@unocss/astro": "^66.5.10",
     "@unocss/postcss": "^66.5.10",
