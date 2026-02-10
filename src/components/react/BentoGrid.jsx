@@ -177,7 +177,7 @@ export default function BentoGrid() {
                             Únete a nuestro equipo de alto rendimiento. Buscamos talento para gestionar proyectos internacionales con los más altos estándares.
                         </p>
                         <ul className="text-sm text-gray-400 space-y-1 mt-2">
-                            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-action rounded-full"></span>Vacantes en Alemania y España</li>
+                            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-action rounded-full"></span>Vacantes a lo largo de toda España</li>
                             <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-action rounded-full"></span>Crecimiento profesional</li>
                             <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-action rounded-full"></span>Formación continua</li>
                         </ul>
@@ -223,17 +223,23 @@ export default function BentoGrid() {
                 {/* Card 5: Análisis de Proyecto (Wide) - 2x1 */}
                 <div
                     onClick={() => setAnalysisModalOpen(true)}
-                    className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-800 border border-neutral-700 flex items-center p-8 hover:border-action transition-all cursor-pointer h-full"
+                    className="bento-card-anim group col-span-1 md:col-span-2 md:row-span-1 relative overflow-hidden rounded-3xl bg-neutral-800 border border-neutral-700 flex flex-col items-center justify-evenly p-8 hover:border-action transition-all cursor-pointer h-full"
                 >
-                    <div className="mr-6 p-4 bg-background rounded-2xl text-white group-hover:bg-action/20 group-hover:text-action transition-colors">
-                        <FileSearch size={32} />
+                    <div className="flex items-center">
+                        <div className="mr-6 p-4 bg-background rounded-2xl text-white group-hover:bg-action/20 group-hover:text-action transition-colors">
+                            <FileSearch size={32} />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl text-white font-bold">Análisis de Proyecto</h3>
+                            <p className="text-gray-400">
+                                Evaluamos la viabilidad de tu proyecto, obra nueva o reforma. Solicita un estudio técnico y económico detallado.
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="text-2xl text-white font-bold">Análisis de Proyecto</h3>
-                        <p className="text-gray-400">
-                            Evaluamos la viabilidad de tu proyecto, obra nueva o reforma. Solicita un estudio técnico y económico detallado.
-                        </p>
-                    </div>
+                    <button className="hidden md:flex items-center gap-2 px-6 py-3 bg-action hover:bg-orange-600 text-white font-bold rounded-xl transition-all transform group-hover:scale-105 shadow-lg shadow-action/20 whitespace-nowrap">
+                        Solicitar Análisis
+                        <span aria-hidden="true">&rarr;</span>
+                    </button>
                 </div>
 
                 {/* Card 6: Contacto - 2x1 */}

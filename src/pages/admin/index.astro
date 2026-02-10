@@ -1,10 +1,8 @@
 ---
 import AdminLayout from "../../layouts/AdminLayout.astro";
-import {
-    getJobOffersWithStats,
-    getProjectAnalyses,
-} from "../../lib/server/actions";
+import { getJobOffersWithStats } from "../../lib/server/actions";
 import { verifyToken } from "../../lib/server/auth";
+import AdminAnalysisList from "../../components/react/AdminAnalysisList";
 
 const token = Astro.cookies.get("admin_token")?.value;
 
@@ -16,35 +14,8 @@ const offersPage = Number(Astro.url.searchParams.get("offersPage")) || 1;
 const analysisPage = Number(Astro.url.searchParams.get("analysisPage")) || 1;
 const limit = 10;
 
-// Fetch data with pagination
-const [offersData, analysesData] = await Promise.all([
-    getJobOffersWithStats(token, offersPage, limit),
-    getProjectAnalyses(token, analysisPage, limit),
-]);
-
+const offersData = await getJobOffersWithStats(token, offersPage, limit);
 const offers = offersData.data;
-const analyses = analysesData.data;
-
-const newApplicationsCount =
-    offersData.total > 0
-        ? offers.reduce(
-              (acc: number, offer: any) => acc + (offer.pendingReview || 0),
-              0,
-          )
-        : 0;
-// We only count displayed for badge? No, badge should probably reflect total pending, but efficiently we can't count ALL without expensive query.
-// For now, let's just use the badge for what we see or don't show it if we can't easily count.
-// Actually, `getJobOffersWithStats` returns total count. We can't know "new" applications across ALL pages without a separate count query.
-// Let's settle for removing the badge count logic mostly or just using a separate stats call if needed.
-// User requirement: "notificaciones de las nuevas solicitudes".
-// Ideally we'd separate fetching counts from fetching paginated lists.
-// For now, I'll allow the badge to just show checks on CURRENT page or remove it.
-// Wait, `getJobOffersWithStats` aggregate returns `totalApplications`.
-// Let's assume for this iteration we simplify badges to just be "Nuevos" if current page has them, or fetch counts separately.
-// To satisfy user constraint, I will stick to what I have, but realize badge might be partial.
-// Actually, I can rely on a separate query for global stats if I really wanted, but let's just keep it simple. count pending on current page.
-
-const newAnalysesCount = analysesData.total; // Total analyses available
 ---
 
 <AdminLayout title="Panel Principal">
@@ -95,13 +66,6 @@ const newAnalysesCount = analysesData.total; // Total analyses available
             class="pb-4 px-4 text-gray-400 font-medium hover:text-white transition-colors border-b-2 border-transparent flex items-center gap-2"
         >
             Análisis de Proyectos
-            {
-                newAnalysesCount > 0 && (
-                    <span class="bg-secondary text-neutral-900 text-xs font-bold px-2 py-0.5 rounded-full">
-                        {newAnalysesCount}
-                    </span>
-                )
-            }
         </button>
     </div>
 
@@ -230,125 +194,8 @@ const newAnalysesCount = analysesData.total; // Total analyses available
     </div>
 
     {/* Tab Content: Project Analysis */}
-    <div
-        id="tab-analysis-content"
-        class="hidden bg-neutral-900 shadow-xl overflow-hidden sm:rounded-3xl border border-neutral-800"
-    >
-        {
-            analyses.length === 0 ? (
-                <div class="text-center py-12">
-                    <p class="text-gray-500 text-lg">
-                        No hay solicitudes de análisis.
-                    </p>
-                </div>
-            ) : (
-                <>
-                    <ul class="divide-y divide-neutral-800">
-                        {analyses.map((analysis: any) => (
-                            <li>
-                                <div class="block hover:bg-neutral-800/50 transition-colors">
-                                    <div class="px-6 py-6 sm:px-8">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <div class="flex items-center gap-3">
-                                                <div class="text-lg font-bold text-white max-w-xs truncate">
-                                                    {analysis.contactEmail}
-                                                </div>
-                                                <span class="px-2 py-0.5 rounded text-xs border border-white/10 bg-white/5 text-gray-300">
-                                                    {analysis.queryType ===
-                                                    "new_construction"
-                                                        ? "Obra Nueva"
-                                                        : "Reforma"}
-                                                </span>
-                                            </div>
-                                            <div class="text-sm text-gray-500">
-                                                {new Date(
-                                                    analysis.createdAt,
-                                                ).toLocaleDateString()}
-                                            </div>
-                                        </div>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-400 mb-4">
-                                            <div>
-                                                <span class="text-gray-500">
-                                                    Ubicación:
-                                                </span>{" "}
-                                                <span class="text-gray-300">
-                                                    {analysis.location}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span class="text-gray-500">
-                                                    Teléfono:
-                                                </span>{" "}
-                                                <span class="text-gray-300">
-                                                    {analysis.contactPhone}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span class="text-gray-500">
-                                                    Superficie:
-                                                </span>{" "}
-                                                <span class="text-gray-300">
-                                                    {analysis.sqMeters} m²
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span class="text-gray-500">
-                                                    Presupuesto/m²:
-                                                </span>{" "}
-                                                <span class="text-gray-300">
-                                                    {analysis.pricePerSqMeter}€
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="bg-neutral-950 p-4 rounded-xl border border-neutral-800 text-sm italic text-gray-400">
-                                            "{analysis.analysisDetails}"
-                                        </div>
-                                        <div class="mt-4 flex justify-end gap-4">
-                                            <button
-                                                data-id={analysis._id}
-                                                class="text-luxury/80 hover:text-luxury font-medium text-sm flex items-center gap-1 delete-analysis-btn"
-                                            >
-                                                Eliminar
-                                            </button>
-                                            <a
-                                                href={`mailto:${analysis.contactEmail}`}
-                                                class="text-action hover:text-orange-400 font-medium text-sm flex items-center gap-1"
-                                            >
-                                                Responder por Email &rarr;
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                    <div class="px-6 py-4 border-t border-neutral-800 flex justify-between items-center text-sm">
-                        <div class="text-gray-400">
-                            Página {analysesData.page} de{" "}
-                            {analysesData.totalPages}
-                        </div>
-                        <div class="flex gap-2">
-                            {analysesData.page > 1 && (
-                                <a
-                                    href={`/admin?offersPage=${offersPage}&analysisPage=${analysesData.page - 1}`}
-                                    class="text-action hover:underline"
-                                >
-                                    Anterior
-                                </a>
-                            )}
-                            {analysesData.page < analysesData.totalPages && (
-                                <a
-                                    href={`/admin?offersPage=${offersPage}&analysisPage=${analysesData.page + 1}`}
-                                    class="text-action hover:underline"
-                                >
-                                    Siguiente
-                                </a>
-                            )}
-                        </div>
-                    </div>
-                </>
-            )
-        }
+    <div id="tab-analysis-content" class="hidden">
+        <AdminAnalysisList client:only="react" />
     </div>
 
     <script>
@@ -425,27 +272,6 @@ const newAnalysesCount = analysesData.total; // Total analyses available
                 } catch (err) {
                     console.error(err);
                     alert("Error eliminando oferta");
-                }
-            });
-        });
-
-        // Delete Logic: Analysis
-        document.querySelectorAll(".delete-analysis-btn").forEach((btn) => {
-            btn.addEventListener("click", async (e) => {
-                const target = e.target;
-                if (!(target instanceof HTMLElement)) return;
-                const id = target.dataset.id;
-                if (!confirm("¿Estás seguro de eliminar este análisis?"))
-                    return;
-                try {
-                    const res = await fetch(`/api/admin/analysis/${id}`, {
-                        method: "DELETE",
-                    });
-                    if (res.ok) window.location.reload();
-                    else alert("Error eliminando análisis");
-                } catch (err) {
-                    console.error(err);
-                    alert("Error eliminando análisis");
                 }
             });
         });

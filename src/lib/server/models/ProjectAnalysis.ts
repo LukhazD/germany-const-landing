@@ -14,8 +14,8 @@ const ProjectAnalysisSchema = new mongoose.Schema({
     queryType: {
         type: String,
         required: true,
-        enum: ['Analisis de Proyecto', 'Obra Nueva', 'Reformas'],
-        default: 'Analisis de Proyecto'
+        enum: ['Obra Nueva', 'Rehabilitación', 'Reforma Integral', 'Proyecto Electricidad', 'Proyecto Fontanería', 'Sistemas de Energía', 'Climatización'],
+        default: 'Obra Nueva'
     },
     isNewConstruction: {
         type: Boolean,

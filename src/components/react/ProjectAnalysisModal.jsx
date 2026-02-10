@@ -5,6 +5,7 @@ export default function ProjectAnalysisModal({ onClose }) {
     const modalRef = useRef(null);
     const contentRef = useRef(null);
     const [status, setStatus] = useState('idle'); // idle, submitting, success, error
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     useEffect(() => {
         const originalStyle = window.getComputedStyle(document.body).overflow;
@@ -99,9 +100,13 @@ export default function ProjectAnalysisModal({ onClose }) {
                             <div className="space-y-1">
                                 <label className="text-xs uppercase tracking-wider text-gray-500 font-bold">Tipo de Consulta</label>
                                 <select name="queryType" className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors">
-                                    <option value="Analisis de Proyecto">Análisis de Proyecto</option>
                                     <option value="Obra Nueva">Obra Nueva</option>
-                                    <option value="Reformas">Reformas</option>
+                                    <option value="Rehabilitación">Rehabilitación</option>
+                                    <option value="Reforma Integral">Reforma Integral</option>
+                                    <option value="Proyecto Electricidad">Proyecto de Electricidad</option>
+                                    <option value="Proyecto Fontanería">Proyecto de Fontanería</option>
+                                    <option value="Sistemas de Energía">Sistemas de Energía (Aerotermia, Suelo Radiante)</option>
+                                    <option value="Climatización">Climatización</option>
                                 </select>
                             </div>
                             <div className="space-y-1">
@@ -139,10 +144,23 @@ export default function ProjectAnalysisModal({ onClose }) {
                             <textarea name="analysisDetails" rows="3" className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" placeholder="Cuéntanos más sobre lo que necesitas..."></textarea>
                         </div>
 
+                        <div className="flex items-start gap-3 pt-2">
+                            <input
+                                type="checkbox"
+                                id="acceptTerms"
+                                checked={acceptedTerms}
+                                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                className="mt-1 h-4 w-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary cursor-pointer accent-primary"
+                            />
+                            <label htmlFor="acceptTerms" className="text-xs text-gray-400 leading-relaxed cursor-pointer select-none">
+                                He leído y acepto los <a href="/legal/terminos" target="_blank" className="text-action underline hover:text-white transition-colors">Términos y Condiciones</a> y la <a href="/legal/privacidad" target="_blank" className="text-action underline hover:text-white transition-colors">Política de Privacidad</a> conforme al RGPD. Consiento el tratamiento de mis datos personales para gestionar mi solicitud de análisis de proyecto.
+                            </label>
+                        </div>
+
                         <div className="pt-4">
                             <button
                                 type="submit"
-                                disabled={status === 'submitting'}
+                                disabled={status === 'submitting' || !acceptedTerms}
                                 className="w-full py-4 bg-white text-black font-bold tracking-widest uppercase hover:bg-gray-200 transition-colors rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {status === 'submitting' ? 'Enviando...' : 'Solicitar Análisis'}

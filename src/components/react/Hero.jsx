@@ -252,37 +252,164 @@ function NormsModal({ onClose }) {
 
             <div ref={contentRef} className="max-w-3xl w-full bg-zinc-900 border border-white/10 rounded-2xl p-8 md:p-12 shadow-2xl relative overflow-y-auto max-h-[85vh] custom-scrollbar opacity-0">
                 <div className="mb-8">
-                    <span className="text-primary text-xs tracking-[0.2em] uppercase font-bold">Marco Técnico</span>
-                    <h2 className="text-3xl md:text-4xl font-serif text-white mt-2 mb-4">Normas Constructivas & ISO 9001</h2>
+                    <span className="text-primary text-xs tracking-[0.2em] uppercase font-bold">Metodología & Experiencia</span>
+                    <h2 className="text-3xl md:text-4xl font-serif text-white mt-2 mb-4">Construcción Industrializada al 100%</h2>
                     <div className="h-1 w-20 bg-primary/50 rounded-full"></div>
                 </div>
 
                 <div className="space-y-6 text-gray-300 font-light leading-relaxed">
+
+                    {/* Experience Badge */}
+                    <div className="flex items-center gap-4 p-4 bg-action/10 border border-action/20 rounded-xl">
+                        <div className="text-4xl font-bold text-action">+20</div>
+                        <div>
+                            <p className="text-white font-medium">Años de Experiencia</p>
+                            <p className="text-gray-400 text-sm">Especialistas en construcción industrializada y pasiva</p>
+                        </div>
+                    </div>
+
                     <p>
-                        <strong className="text-white block mb-2">Construcción Modular y Normativa Vigente</strong>
-                        En el panorama actual, un 90% de las empresas de construcción modular operan en áreas grises respecto a las normativas estándar. Esto se debe a la lenta adaptación de los códigos técnicos a los nuevos sistemas industrializados. Sin embargo, en Germany Const, nos aseguramos de que cada proyecto no solo cumpla, sino que exceda los estándares de calidad y seguridad.
+                        <strong className="text-white block mb-2">Construcciones Pasivas & Prefabricados</strong>
+                        Somos una empresa especializada en construcción 100% industrializada y pasiva. Colaboramos con <span className="text-action font-medium">Prefabricados Molins</span>, líderes en el sector, trabajando con sistemas de hoja principal y secundaria de hormigón, junto con aislamientos de alta eficiencia y ventanas incrustadas de última generación.
                     </p>
 
                     <p>
-                        <strong className="text-white block mb-2">Nuestro Compromiso ISO 9001</strong>
-                        Implementamos procesos rigurosos alineados con la ISO 9001 para garantizar la gestión de calidad en cada fase:
+                        <strong className="text-white block mb-2">Metodología Lean 5S</strong>
+                        La implementación de nuestro flujo de trabajo basado en <span className="text-action font-medium">Lean 5S</span> nos permite optimizar cada fase del proceso constructivo, obteniendo resultados excepcionales:
                     </p>
 
-                    <ul className="list-disc pl-5 space-y-2 marker:text-primary">
-                        <li>
-                            <span className="text-white font-medium">Análisis de Viabilidad:</span> Evaluamos si un proyecto es viable bajo las normas constructivas o si solo se trata de una propuesta estética ("venta de diseño").
+                    {/* Benefits Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center">
+                            <div className="text-2xl font-bold text-action mb-1">15%</div>
+                            <p className="text-sm text-gray-400">Beneficio Neto</p>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center">
+                            <div className="text-2xl font-bold text-action mb-1">-30%</div>
+                            <p className="text-sm text-gray-400">Mano de Obra</p>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center">
+                            <div className="text-2xl font-bold text-action mb-1">100%</div>
+                            <p className="text-sm text-gray-400">Planificación Real</p>
+                        </div>
+                    </div>
+
+                    <p>
+                        <strong className="text-white block mb-2">Servicios para Empresas</strong>
+                        Nuestros servicios están diseñados para empresas con alta demanda en todas las fases de la construcción que buscan mejorar su fluidez constructiva y optimizar recursos:
+                    </p>
+
+                    <ul className="list-none space-y-3">
+                        <li className="flex items-start gap-3">
+                            <span className="w-2 h-2 bg-action rounded-full mt-2 flex-shrink-0"></span>
+                            <span><span className="text-white font-medium">Operarios Cualificados:</span> Personal especializado con formación continua en técnicas industrializadas.</span>
                         </li>
-                        <li>
-                            <span className="text-white font-medium">Adaptación Normativa:</span> Llevamos tus construcciones modulares al cumplimiento total de las normativas vigentes, asegurando que sean legalizables y seguras.
+                        <li className="flex items-start gap-3">
+                            <span className="w-2 h-2 bg-action rounded-full mt-2 flex-shrink-0"></span>
+                            <span><span className="text-white font-medium">Encargados de Obra:</span> Supervisión técnica y coordinación de equipos en terreno.</span>
                         </li>
-                        <li>
-                            <span className="text-white font-medium">Control de Calidad:</span> Supervisión técnica desde la estructura hasta los acabados finales (aislamientos, eficiencia energética).
+                        <li className="flex items-start gap-3">
+                            <span className="w-2 h-2 bg-action rounded-full mt-2 flex-shrink-0"></span>
+                            <span><span className="text-white font-medium">Gestión de Proyectos:</span> Control integral de plazos, costes y calidad.</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                            <span className="w-2 h-2 bg-action rounded-full mt-2 flex-shrink-0"></span>
+                            <span><span className="text-white font-medium">Consultoría & Diseño:</span> Asesoramiento técnico y diseño optimizado para construcción industrializada.</span>
                         </li>
                     </ul>
 
+                    {/* Divider */}
+                    <div className="border-t border-white/10 my-8"></div>
+
+                    {/* ISO International Standards Section */}
+                    <div className="mb-6">
+                        <span className="text-primary text-xs tracking-[0.2em] uppercase font-bold">Certificaciones</span>
+                        <h3 className="text-2xl font-serif text-white mt-2">Estándares Internacionales ISO</h3>
+                    </div>
+
+                    <p>
+                        Contamos con <span className="text-action font-medium">estándares internacionales</span> que hacen vuestros proyectos más rentables. Con nuestras formas constructivas podréis construir en cualquier parte del mundo globalizado, dentro de los estándares constructivos homologados.
+                    </p>
+
+                    <p className="text-sm text-gray-400">
+                        Las normas ISO, creadas por la Organización Internacional de Normalización, establecen requisitos homogéneos para la gestión, productos y servicios, garantizando calidad, seguridad y eficiencia global. Aceptadas en <span className="text-white font-medium">193 países</span>.
+                    </p>
+
+                    {/* ISO Benefits Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 my-6">
+                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
+                            <div className="text-action font-bold mb-1">Homogeneidad</div>
+                            <p className="text-sm text-gray-400">Productos y servicios con los mismos estándares independientemente de su origen.</p>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
+                            <div className="text-action font-bold mb-1">Mejora Continua</div>
+                            <p className="text-sm text-gray-400">Procesos eficientes, reducción de errores y optimización de rentabilidad.</p>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
+                            <div className="text-action font-bold mb-1">Confianza</div>
+                            <p className="text-sm text-gray-400">Refuerza la confianza del cliente y diferencia a las empresas en el mercado.</p>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
+                            <div className="text-action font-bold mb-1">Competitividad</div>
+                            <p className="text-sm text-gray-400">Reduce costes y mejora el posicionamiento de las organizaciones.</p>
+                        </div>
+                    </div>
+
+                    {/* ISO Certifications */}
+                    <div className="flex flex-wrap gap-2 my-4">
+                        <span className="px-3 py-1 bg-action/20 text-action text-xs font-bold rounded-full">ISO 9001 · Calidad</span>
+                        <span className="px-3 py-1 bg-white/10 text-white text-xs font-medium rounded-full">ISO 14001 · Medioambiente</span>
+                        <span className="px-3 py-1 bg-white/10 text-white text-xs font-medium rounded-full">ISO 27001 · Seguridad</span>
+                        <span className="px-3 py-1 bg-white/10 text-white text-xs font-medium rounded-full">ISO 22000 · Inocuidad</span>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-white/10 my-8"></div>
+
+                    {/* ISO 19650 BIM Section */}
+                    <div className="mb-6">
+                        <span className="text-primary text-xs tracking-[0.2em] uppercase font-bold">Metodología BIM</span>
+                        <h3 className="text-2xl font-serif text-white mt-2">ISO 19650 · Gestión de Información</h3>
+                    </div>
+
+                    <p>
+                        Implantamos la norma <span className="text-action font-medium">ISO 19650</span> en todas las empresas con las que trabajamos. Este método busca la rentabilidad de tiempo, coste, planificación, gestión y flujos de trabajo en la producción mediante <span className="text-action font-medium">BIM (Building Information Modelling)</span>.
+                    </p>
+
+                    <p className="text-sm text-gray-400">
+                        Establece procesos colaborativos para la producción, gestión e intercambio de información, mejorando la eficiencia y reduciendo errores mediante un <span className="text-white font-medium">Entorno Común de Datos (CDE)</span>.
+                    </p>
+
+                    {/* ISO 19650 Structure */}
+                    <div className="bg-white/5 border border-white/10 p-5 rounded-xl my-6">
+                        <p className="text-white font-medium mb-3">Estructura ISO 19650:</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-action rounded-full"></span>
+                                <span><span className="text-gray-400">19650-1:</span> Conceptos y principios</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-action rounded-full"></span>
+                                <span><span className="text-gray-400">19650-2:</span> Fase de entrega</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-action rounded-full"></span>
+                                <span><span className="text-gray-400">19650-3:</span> Fase de operación</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-action rounded-full"></span>
+                                <span><span className="text-gray-400">19650-5:</span> Seguridad de información</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p className="text-sm text-gray-400">
+                        <span className="text-white font-medium">Entorno Común de Datos (CDE):</span> No es solo tecnología, sino un proceso gestionado de intercambio de información (trabajo en progreso, compartido, publicado y archivado) que garantiza que la información correcta llegue a la persona adecuada en el momento justo.
+                    </p>
+
                     <div className="bg-white/5 border border-white/10 p-6 rounded-xl mt-8">
                         <p className="text-sm italic text-gray-400">
-                            "Os llevamos a ese camino: llevar al día vuestras construcciones conforme a la ley y la excelencia técnica."
+                            "Más eficiencia operativa, menos mano de obra tradicional. Ejecutamos con las cualidades que garantizan rentabilidad y excelencia."
                         </p>
                     </div>
                 </div>
