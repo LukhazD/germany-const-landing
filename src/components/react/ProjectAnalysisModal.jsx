@@ -153,7 +153,7 @@ export default function ProjectAnalysisModal({ onClose }) {
                                 className="mt-1 h-4 w-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary cursor-pointer accent-primary"
                             />
                             <label htmlFor="acceptTerms" className="text-xs text-gray-400 leading-relaxed cursor-pointer select-none">
-                                He leído y acepto los <a href="/legal/terminos" target="_blank" className="text-action underline hover:text-white transition-colors">Términos y Condiciones</a> y la <a href="/legal/privacidad" target="_blank" className="text-action underline hover:text-white transition-colors">Política de Privacidad</a> conforme al RGPD. Consiento el tratamiento de mis datos personales para gestionar mi solicitud de análisis de proyecto.
+                                He leído y acepto la <a href="/privacy" target="_blank" className="text-action underline hover:text-white transition-colors">Política de Privacidad</a> conforme al RGPD. Consiento el tratamiento de mis datos personales para gestionar mi solicitud de análisis de proyecto.
                             </label>
                         </div>
 

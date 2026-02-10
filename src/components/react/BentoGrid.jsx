@@ -292,7 +292,6 @@ export default function BentoGrid() {
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full mt-8 md:mt-0">
                         <div className="flex flex-col gap-1 text-sm text-neutral-500 font-medium">
                             <a href="/privacy" className="hover:text-white transition-colors">Política de privacidad</a>
-                            <a href="#" className="hover:text-white transition-colors">Términos y condiciones</a>
                         </div>
 
                         <div className="text-neutral-600 text-xs mt-6 md:mt-0 text-right">
