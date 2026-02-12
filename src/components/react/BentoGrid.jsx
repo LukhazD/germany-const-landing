@@ -254,7 +254,7 @@ export default function BentoGrid() {
                     <div className="flex flex-col gap-4 w-full">
                         <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group-hover:border-white/10 transition-colors">
                             <span className="text-gray-400 text-sm">Teléfono</span>
-                            <span className="text-white font-mono text-sm">+34 900 000 000</span>
+                            <span className="text-white font-mono text-sm">+34 607 013 120</span>
                         </div>
                         <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group-hover:border-white/10 transition-colors">
                             <span className="text-gray-400 text-sm">Email</span>
@@ -262,7 +262,7 @@ export default function BentoGrid() {
                         </div>
                         <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group-hover:border-white/10 transition-colors">
                             <span className="text-gray-400 text-sm">Oficina</span>
-                            <span className="text-white text-sm text-right">Barcelona, ES</span>
+                            <span className="text-white text-sm text-right">Avenida Sueca 46410, ciudad Pamplona 85</span>
                         </div>
                     </div>
                 </div>
